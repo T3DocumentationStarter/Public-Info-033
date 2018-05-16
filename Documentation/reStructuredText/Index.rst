@@ -197,56 +197,38 @@ properties.dateFormat
       The datepicker time format.
       The following date formats are allowed:
 
-      Day:
+      **Day**
 
-      .. t3-field-list-table::
-        :header-rows: 1
+      ================ ====================================================
+      Format character Description
+      ================ ====================================================
+      d                Day of the month, 2 digits with leading zeros
+      D                A textual representation of a day, three letters
+      j                Day of the month without leading zeros
+      l                A full textual representation of the day of the
+                       week
+      ================ ====================================================
 
-        - :a: Format character
-          :b: Description
+      **Month**
 
-        - :a: d
-          :b: Day of the month, 2 digits with leading zeros
+      ================ ====================================================
+      Format character Description
+      ================ ====================================================
+      F                A full textual representation of a month, such as
+                       January or March
+      m                Numeric representation of a month, with leading
+                       zeros
+      M                A short textual representation of a month, three
+                       letters
+      n                Numeric representation of a month, without leading
+                       zeros
+      ================ ====================================================
 
-        - :a: D
-          :b: A textual representation of a day, three letters
+      **Year**
 
-        - :a: j
-          :b: Day of the month without leading zeros
-
-        - :a: l
-          :b: A full textual representation of the day of the week
-
-      Month:
-
-      .. t3-field-list-table::
-        :header-rows: 1
-
-        - :a: Format character
-          :b: Description
-
-        - :a: F
-          :b: A full textual representation of a month, such as January or March
-
-        - :a: m
-          :b: Numeric representation of a month, with leading zeros
-
-        - :a: M
-          :b: A short textual representation of a month, three letters
-
-        - :a: n
-          :b: Numeric representation of a month, without leading zeros
-
-      Year:
-
-      .. t3-field-list-table::
-        :header-rows: 1
-
-        - :a: Format character
-          :b: Description
-
-        - :a: Y
-          :b: A full numeric representation of a year, 4 digits
-
-        - :a: y
-          :b: A two digit representation of a year
+      ================ ====================================================
+      Format character Description
+      ================ ====================================================
+      Y                A full numeric representation of a year, 4 digits
+      y                A two digit representation of a year
+      ================ ====================================================
