@@ -139,3 +139,42 @@ The honeypot has effects on the (static) site caching. What can I do?
 If you want to use a (static) site caching - for example using
 EXT:staticfilecache - you should disable the automatic inclusion of the
 honeypot. Read more ':ref:`here<typo3.cms.form.prototypes.<prototypeIdentifier>.formelementsdefinition.form.renderingoptions.honeypot.enable>`'.
+
+:aspect:`Description`
+      Enable or disable the honeypot feature.
+
+.. attention::
+
+   If you want to use a (static) site caching - for example EXT:staticfilecache -
+   you should disable the automatic inclusion of the honeypot.
+
+   Within your form definition:
+
+   .. code-block:: yaml
+
+      type: Form
+      identifier: fooForm
+      label: 'foo'
+      renderingOptions:
+        honeypot:
+          enable: false
+      renderables:
+        ...
+
+   Within your form setup:
+
+   .. code-block:: yaml
+
+      TYPO3:
+        CMS:
+          Form:
+            prototypes:
+              standard:
+                formElementsDefinition:
+                  Form:
+                    renderingOptions:
+                      honeypot:
+                        enable: false
+
+   See forge issue `#83212 <https://forge.typo3.org/issues/83212>` for more
+   information.
