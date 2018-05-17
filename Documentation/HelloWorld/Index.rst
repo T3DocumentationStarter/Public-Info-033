@@ -1,105 +1,160 @@
-
 .. include:: ../Includes.txt
 
-============
-Hello World!
-============
 
-Here I go!
+.. _faq:
 
-renderingOptions.honeypot.enable
---------------------------------
+===
+FAQ
+===
 
-:aspect:`Option path`
-      TYPO3.CMS.Form.prototypes.<prototypeIdentifier>.formElementsDefinition.Form.renderingOptions.honeypot.enable
 
-:aspect:`Data type`
-      bool
+.. _faq-override-frontend-templates:
 
-:aspect:`Needed by`
-      Frontend
+How do I override the frontend templates?
+=========================================
 
-:aspect:`Overwritable within form definition`
-      Yes
+There are 2 possible ways to override the frontend templates.
 
-:aspect:`form editor can write this property into the form definition (for prototype 'standard')`
-      No
 
-:aspect:`Mandatory`
-      Yes
+Globally extend the fluid search paths
+--------------------------------------
 
-:aspect:`Default value (for prototype 'standard')`
-      .. code-block:: yaml
-         :linenos:
-         :emphasize-lines: 20
+Since EXT:form mainly uses YAML as configuration language you need to
+register your own additional YAML files. Let us assume you are using a
+sitepackage ``EXT:my_site_package`` which contains your whole frontend
+integration.
 
-         Form:
-           renderingOptions:
-             translation:
-               translationFile: 'EXT:form/Resources/Private/Language/locallang.xlf'
-             templateRootPaths:
-               10: 'EXT:form/Resources/Private/Frontend/Templates/'
-             partialRootPaths:
-               10: 'EXT:form/Resources/Private/Frontend/Partials/'
-             layoutRootPaths:
-               10: 'EXT:form/Resources/Private/Frontend/Layouts/'
-             addQueryString: false
-             argumentsToBeExcludedFromQueryString: {  }
-             additionalParams: {  }
-             controllerAction: perform
-             httpMethod: post
-             httpEnctype: multipart/form-data
-             _isCompositeFormElement: false
-             _isTopLevelFormElement: true
-             honeypot:
-               enable: true
-               formElementToUse: Honeypot
-             submitButtonLabel: Submit
-             skipUnknownElements: true
 
-.. :aspect:`Good to know`
-      ToDo
+EXT:my_site_package/Configuration/TypoScript/setup.txt
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-:aspect:`Description`
-      Enable or disable the honeypot feature.
+First of all, register a new EXT:form configuration for the frontend via
+TypoScript.
 
-.. attention::
+.. code-block:: typoscript
 
-   If you want to use a (static) site caching - for example EXT:staticfilecache -
-   you should disable the automatic inclusion of the honeypot.
+   plugin.tx_form {
+       settings {
+           yamlConfigurations {
+               # register your own additional configuration
+               # choose a number higher than 30 (below is reserved)
+               100 = EXT:my_site_package/Configuration/Yaml/CustomFormSetup.yaml
+           }
+       }
+   }
 
-   Within your form definition:
 
-   .. code-block:: yaml
+EXT:my_site_package/Configuration/Yaml/CustomFormSetup.yaml
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-      type: Form
-      identifier: fooForm
-      label: 'foo'
-      renderingOptions:
-        honeypot:
-          enable: false
-      renderables:
-        ...
+Next, define the additional fluid template search paths via YAML.
 
-   Within your form setup:
+.. code-block:: yaml
 
-   .. code-block:: yaml
+   TYPO3:
+     CMS:
+       Form:
+         prototypes:
+           standard:
+             formElementsDefinition:
+               Form:
+                 renderingOptions:
+                   templateRootPaths:
+                     20: 'EXT:my_site_package/Resources/Private/Form/Frontend/Templates/'
+                   partialRootPaths:
+                     20: 'EXT:my_site_package/Resources/Private/Form/Frontend/Partials/'
+                   layoutRootPaths:
+                     20: 'EXT:my_site_package/Resources/Private/Form/Frontend/Layouts/'
 
-      TYPO3:
-        CMS:
-          Form:
-            prototypes:
-              standard:
-                formElementsDefinition:
-                  Form:
-                    renderingOptions:
-                      honeypot:
-                        enable: false
+.. note::
 
-   See forge issue `#83212 <https://forge.typo3.org/issues/83212>`_ for more
-   information.
-   
-   .. _faq-honeypt-session:
+   The preview within the form editor (backend module) uses the frontend
+   templates as well. If you want the preview to show your customized
+   templates, register the new paths for the backend module as well.
+
+
+EXT:my_site_package/ext_typoscript_setup.txt
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Register your EXT:form configuration for the backend via TypoScript. Read
+the :ref:`chapter <concepts-configuration-yamlregistration-backend>` to
+learn why we recommend using the concept behind ``ext_typoscript_setup.txt``.
+
+.. code-block:: typoscript
+
+   module.tx_form {
+       settings {
+           yamlConfigurations {
+               100 = EXT:my_site_package/Configuration/Yaml/CustomFormSetup.yaml
+           }
+       }
+   }
+
+
+.. _faq-migrate-from-v7:
+
+How do I migrate from EXT:form v7?
+==================================
+
+The old form extension (used in TYPO3 v7, which is compatible to TYPO3 v6)
+was moved into an own extension called ``form_legacy``.  This extension can
+be found within the official `TER <https://typo3.org/extensions/repository/view/form_legacy>`_.
+When upgrading to TYPO3 v8 an upgrade wizard will tell you if form_legacy is
+still needed.
+
+
+.. _faq-frontend-validation:
+
+Is there a frontend validation?
+===============================
+
+Yes, an HTML 5 based frontend validation is implemented. Nevertheless,
+there is no JavaScript validation. This has to be integrated manually.
+Reliable and maintained projects are `Parsley <https://github.com/guillaumepotier/Parsley.js>`_
+and `jQuery Validation <https://github.com/jquery-validation/jquery-validation>`_.
+
+
+.. _faq-localize-client-side-validations:
+
+How do I localize the client side validations in the frontend?
+==============================================================
+
+The displayed validation message is a browser specific text. The output is
+not generated by TYPO3 and therefore you cannot change it easily.
+Nevertheless, there is a JavaScript solution for changing the validation
+message. See `Stack Overflow <http://stackoverflow.com/questions/5272433/html5-form-required-attribute-set-custom-validation-message>`_
+for more information.
+
+
+.. _faq-date-picker:
+
+How does the date picker work?
+==============================
+
+EXT:form ships a datepicker form element. To unfold its full potential you
+should add jquery JavaScript files and jqueryUi JavaScript and CSS files to
+your frontend.
+
+
+.. _faq-user-registration:
+
+Is it possible to build a frontend user registration with EXT:form?
+===================================================================
+
+Possible, yes. But we are not aware of an integration.
+
+
+.. _faq-export-module:
+
+Is there some kind of export module for saved forms?
+====================================================
+
+Currently, there are no plans to implement such a feature. There are huge
+concerns regarding the data privacy when it comes to storing user data in
+your TYPO3 database permanently.
+
+
+.. _faq-honeypt-session:
 
 The honeypot does not work with static site caching. What can I do?
 ===================================================================
@@ -119,12 +174,12 @@ up with the placeholder attribute). For a text field or a textarea, this is
 quite trivial.
 
 A little bit more thrilling is the handling for select and multi select form
-elements. Those special elements support - beside the :yaml:`defaultValue` - a
-:yaml:`prependOptionValue` setting. The :yaml:`defaultValue` allows you to select a
+elements. Those special elements support - beside the ``defaultValue`` - a
+``prependOptionValue`` setting. The ``defaultValue`` allows you to select a
 specific option as default. This option will be pre-selected as soon as the
-form is loaded. In contrast, the :yaml:`prependOptionValue` allows you to define a
+form is loaded. In contrast, the ``prependOptionValue`` allows you to define a
 string which will be shown as the first select-option. If both settings exist,
-the :yaml:`defaultValue` is prioritized.
+the ``defaultValue`` is prioritized.
 
 Learn more :ref:`here<typo3.cms.form.prototypes.\<prototypeIdentifier>.formelementsdefinition.\<formelementtypeidentifier>.defaultValue>`
 and see the forge issue `#82422 <https://forge.typo3.org/issues/82422#note-6>`_.
